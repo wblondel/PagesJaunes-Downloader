@@ -1,0 +1,454 @@
+{
+  "annuaires": [
+    {
+      "numAnn": "1",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "2",
+      "nomDpt": "Aisne"
+    },
+    {
+      "numAnn": "3",
+      "nomDpt": "Allier"
+    },
+    {
+      "numAnn": "4",
+      "nomDpt": "Alpes de Hautes-Provence"
+    },
+    {
+      "numAnn": "5",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "6",
+      "nomDpt": "Alpes-Maritimes",
+      "sousAnn": [
+        {
+          "nomAnn": "Alpes-Maritimes - Est",
+          "numAnn": "306"
+        },
+        {
+          "nomAnn": "ALpes-Maritimes - Ouest",
+          "numAnn": "406"
+        }
+      ]
+    },
+    {
+      "numAnn": "7",
+      "nomDpt": "Ardèche"
+    },
+    {
+      "numAnn": "8",
+      "nomDpt": "Ardennes"
+    },
+    {
+      "numAnn": "9",
+      "nomDpt": "Ariège"
+    },
+    {
+      "numAnn": "10",
+      "nomDpt": "Aube"
+    },
+    {
+      "numAnn": "11",
+      "nomDpt": "Aude"
+    },
+    {
+      "numAnn": "12",
+      "nomDpt": "Aveyron"
+    },
+    {
+      "numAnn": "13",
+      "nomDpt": "Bouches-du-Rhône",
+      "sousAnn": [
+        {
+          "nomAnn": "Bouches-du-Rhône - Marseille",
+          "numAnn": "313"
+        },
+        {
+          "nomAnn": "Bouches-du-Rhône - Hors Marseille",
+          "numAnn": "413"
+        }
+      ]
+    },
+    {
+      "numAnn": "14",
+      "nomDpt": "Calvados"
+    },
+    {
+      "numAnn": "15",
+      "nomDpt": "Cantal"
+    },
+    {
+      "numAnn": "16",
+      "nomDpt": "Charente"
+    },
+    {
+      "numAnn": "17",
+      "nomDpt": "Charente-Maritime"
+    },
+    {
+      "numAnn": "18",
+      "nomDpt": "Cher"
+    },
+    {
+      "numAnn": "19",
+      "nomDpt": "Corrèze"
+    },
+    {
+      "numAnn": "20",
+      "nomDpt": "Corse",
+      "sousAnn": [
+        {
+          "nomAnn": "2A Corse-du-Sud",
+          "numAnn": "320"
+        },
+        {
+          "nomAnn": "2B Haute-Corse",
+          "numAnn": "420"
+        }
+      ]
+    },
+    {
+      "numAnn": "21",
+      "nomDpt": "Côte-d'Or"
+    },
+    {
+      "numAnn": "22",
+      "nomDpt": "Côtes d'Armor"
+    },
+    {
+      "numAnn": "23",
+      "nomDpt": "Creuse"
+    },
+    {
+      "numAnn": "24",
+      "nomDpt": "Dordogne"
+    },
+    {
+      "numAnn": "25",
+      "nomDpt": "Doubs"
+    },
+    {
+      "numAnn": "26",
+      "nomDpt": "Drôme"
+    },
+    {
+      "numAnn": "27",
+      "nomDpt": "Eure"
+    },
+    {
+      "numAnn": "28",
+      "nomDpt": "Eure-et-Loir"
+    },
+    {
+      "numAnn": "29",
+      "nomDpt": "Finistère"
+    },
+    {
+      "numAnn": "30",
+      "nomDpt": "Gard",
+      "sousAnn": [
+        {
+          "nomAnn": "Gard - Nord",
+          "numAnn": "330"
+        },
+        {
+          "nomAnn": "Gard - Sud",
+          "numAnn": "430"
+        }
+      ]
+    },
+    {
+      "numAnn": "31",
+      "nomDpt": "Haute-Garonne",
+      "sousAnn": [
+        {
+          "nomAnn": "Haute-Garonne - Toulouse",
+          "numAnn": "331"
+        },
+        {
+          "nomAnn": "Haute-Garonne - Périphérie",
+          "numAnn": "431"
+        }
+      ]
+    },
+    {
+      "numAnn": "32",
+      "nomDpt": "Gers"
+    },
+    {
+      "numAnn": "33",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "34",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "35",
+      "nomDpt": "Ille-et-Vilaine"
+    },
+    {
+      "numAnn": "36",
+      "nomDpt": "Indre"
+    },
+    {
+      "numAnn": "37",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "38",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "39",
+      "nomDpt": "Jura"
+    },
+    {
+      "numAnn": "40",
+      "nomDpt": "Landes"
+    },
+    {
+      "numAnn": "41",
+      "nomDpt": "Loir-et-Cher"
+    },
+    {
+      "numAnn": "42",
+      "nomDpt": "Loire"
+    },
+    {
+      "numAnn": "43",
+      "nomDpt": "Haute-Loire"
+    },
+    {
+      "numAnn": "44",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "45",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "46",
+      "nomDpt": "Lot"
+    },
+    {
+      "numAnn": "47",
+      "nomDpt": "Lot-et-Garonne"
+    },
+    {
+      "numAnn": "48",
+      "nomDpt": "Lozère"
+    },
+    {
+      "numAnn": "49",
+      "nomDpt": "Maine-et-Loire"
+    },
+    {
+      "numAnn": "50",
+      "nomDpt": "Manche"
+    },
+    {
+      "numAnn": "51",
+      "nomDpt": "Marne"
+    },
+    {
+      "numAnn": "52",
+      "nomDpt": "Haute-Marne"
+    },
+    {
+      "numAnn": "53",
+      "nomDpt": "Mayenne"
+    },
+    {
+      "numAnn": "54",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "55",
+      "nomDpt": "Meuse"
+    },
+    {
+      "numAnn": "56",
+      "nomDpt": "Morbihan"
+    },
+    {
+      "numAnn": "57",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "58",
+      "nomDpt": "Nièvre"
+    },
+    {
+      "numAnn": "59",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "60",
+      "nomDpt": "Oise"
+    },
+    {
+      "numAnn": "61",
+      "nomDpt": "Orne"
+    },
+    {
+      "numAnn": "62",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "63",
+      "nomDpt": "Puy-de-Dôme"
+    },
+    {
+      "numAnn": "64",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "65",
+      "nomDpt": "Hautes-Pyrénées"
+    },
+    {
+      "numAnn": "66",
+      "nomDpt": "Pyrénées-Orientales"
+    },
+    {
+      "numAnn": "67",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "68",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "69",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "70",
+      "nomDpt": "Haute-Saône"
+    },
+    {
+      "numAnn": "71",
+      "nomDpt": "Saône-et-Loire"
+    },
+    {
+      "numAnn": "72",
+      "nomDpt": "Sarthe"
+    },
+    {
+      "numAnn": "73",
+      "nomDpt": "Savoie"
+    },
+    {
+      "numAnn": "74",
+      "nomDpt": "Haute-Savoie"
+    },
+    {
+      "numAnn": "75",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "76",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "77",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "78",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "79",
+      "nomDpt": "Deux-Sèvres"
+    },
+    {
+      "numAnn": "80",
+      "nomDpt": "Somme"
+    },
+    {
+      "numAnn": "81",
+      "nomDpt": "Tarn"
+    },
+    {
+      "numAnn": "82",
+      "nomDpt": "Tarn-et-Garonne"
+    },
+    {
+      "numAnn": "83",
+      "nomDpt": "Var"
+    },
+    {
+      "numAnn": "84",
+      "nomDpt": "Vaucluse"
+    },
+    {
+      "numAnn": "85",
+      "nomDpt": "Vendée"
+    },
+    {
+      "numAnn": "86",
+      "nomDpt": "Vienne"
+    },
+    {
+      "numAnn": "87",
+      "nomDpt": "Haute-Vienne"
+    },
+    {
+      "numAnn": "88",
+      "nomDpt": "Vosges"
+    },
+    {
+      "numAnn": "89",
+      "nomDpt": "Yonne"
+    },
+    {
+      "numAnn": "90",
+      "nomDpt": "Territoire-de-Belfort"
+    },
+    {
+      "numAnn": "91",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "92",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "93",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "94",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "95",
+      "nomDpt": "Ain"
+    },
+    {
+      "numAnn": "971",
+      "nomDpt": "Guadeloupe"
+    },
+    {
+      "numAnn": "972",
+      "nomDpt": "Martinique"
+    },
+    {
+      "numAnn": "973",
+      "nomDpt": "Guyane"
+    },
+    {
+      "numAnn": "974",
+      "nomDpt": "Réunion"
+    },
+    {
+      "numAnn": "976",
+      "nomDpt": "Mayotte"
+    }
+  ]
+}
