@@ -6,6 +6,7 @@
 # Last modified 31st April 2017 11.29pm
 
 # TODO : Reformat the print()
+# TODO : Give the choice between PagesJaunes and PagesBlanches
 
 import json
 from tqdm import tqdm
