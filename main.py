@@ -5,6 +5,8 @@
 # contact@williamblondel.fr
 # Last modified 31st April 2017 11.29pm
 
+# TODO : Reformat the print()
+
 import json
 
 DIRECTORIES_LIST_FILENAME = "liste_annuaires.json"
