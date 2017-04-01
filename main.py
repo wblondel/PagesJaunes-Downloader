@@ -3,7 +3,7 @@
 
 # PagesJaunesScrap Copyright (C) 2017    William Gerald Blondel
 # contact@williamblondel.fr
-# Last modified 31st April 2017 11.29pm
+# Last modified 1st April 2017 04.30am
 
 # TODO : Reformat the print()
 # TODO : Give the choice between PagesJaunes and PagesBlanches
