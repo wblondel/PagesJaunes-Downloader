@@ -7,6 +7,7 @@
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
+.idea/**/Project_Default.xml
 .idea/dictionaries
 .idea/inspectionProfiles/profiles_settings.xml
 
