@@ -17,9 +17,7 @@ CHUNK_SIZE = 1024*1024
 
 # We load the list of directories
 with DIRECTORIES_LIST_FILENAME.open() as directories_list_fileobject:
-    directories = json.load(directories_list_fileobject)
-
-directories = directories["annuaires"]
+    directories = json.load(directories_list_fileobject)["annuaires"]
 
 # We ask the user which directory he wants to scrap
 numAnnToScrap = None
