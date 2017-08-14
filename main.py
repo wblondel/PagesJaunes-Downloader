@@ -5,9 +5,6 @@
 # contact@williamblondel.fr
 # Last modified 2nd April 2017 12.33am
 
-# TODO : Reformat the print()
-# TODO : Give the choice between PagesJaunes and PagesBlanches
-
 import json
 from pathlib import Path
 from tqdm import tqdm
