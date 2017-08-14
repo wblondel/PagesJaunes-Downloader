@@ -13,7 +13,7 @@ import datetime
 
 
 DIRECTORIES_LIST_FILENAME = Path("liste_annuaires.json")
-CHUNK_SIZE = 1024
+CHUNK_SIZE = 1024*1024
 
 # We load the list of directories
 with DIRECTORIES_LIST_FILENAME.open() as directories_list_fileobject:
