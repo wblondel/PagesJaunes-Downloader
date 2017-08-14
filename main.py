@@ -3,7 +3,7 @@
 
 # PagesJaunesScrap Copyright (C) 2017    William Gerald Blondel
 # contact@williamblondel.fr
-# Last modified 2nd April 2017 12.33am
+# Last modified 14th August 2017
 
 import json
 from pathlib import Path
@@ -32,11 +32,19 @@ dptToScrap = [item for item in directories if item['numAnn'] == numAnnToScrap][0
 print(f"Vous avez choisi le département {dptToScrap['nomDpt']} ({dptToScrap['numAnn']}).")
 print()
 
-if len(dptToScrap) > 2:
+while annType not in ["pja", "anu"]:
+    annType = input("Voulez-vous récupérer l'annuaire PagesJaunes (PJA) ou PagesBlanches (ANU) ? ").lower()
+
+print(f"Vous avez choisi l'annuaire {annType}.")
+print()
+
+if annType == "pja" and len(dptToScrap) > 2:
     print("Ce département a plusieurs annuaires.")
 
     for subAnn in dptToScrap["sousAnn"]:
         print(f"> {subAnn['nomAnn']} ({subAnn['numAnn']})")
+
+    print()
 
     while numAnnToScrap not in [item["numAnn"] for item in dptToScrap["sousAnn"]]:
         numAnnToScrap = input("Lequel voulez-vous récupérer ? ")
@@ -45,8 +53,6 @@ if len(dptToScrap) > 2:
     print(f"Vous avez choisi l'annuaire {numAnnToScrap}.")
     print()
 
-while annType not in ["pja", "anu"]:
-    annType = input("Voulez-vous récupérer l'annuaire PagesJaunes (PJA) ou PagesBlanches (ANU) ? ").lower()
 
 # We create the folder where the files will be downloaded
 Path(f"{annType}/{numAnnToScrap}").mkdir(parents=True, exist_ok=True)
