@@ -84,7 +84,7 @@ for loop in tqdm(range(2, 1500, 2), position=1):
             if first_try:
                 annYear -= 1
                 first_try = False
-                break
+                continue
             else:
                 quit()
 
