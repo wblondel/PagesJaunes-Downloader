@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 from tqdm import tqdm
 import requests
+import datetime
 
 
 DIRECTORIES_LIST_FILENAME = Path("liste_annuaires.json")
@@ -23,7 +24,7 @@ directories = directories["annuaires"]
 # We ask the user which directory he wants to scrap
 numAnnToScrap = None
 annType = None
-annYear = 2017
+annYear = datetime.datetime.now().year
 
 while numAnnToScrap not in [item["numAnn"] for item in directories]:
     numAnnToScrap = input("Veuillez entrer le numéro du département dont vous voulez récupérer l'annuaire : ").zfill(3)
