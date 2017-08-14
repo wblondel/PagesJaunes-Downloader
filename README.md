@@ -2,6 +2,9 @@
 PagesJaunesScrap est un outil pour récupérer les annuaires Pages Jaunes et Pages Blanches en format numérique.
 
 ## Pré-requis
+### Python 3.4
+Cet outil requiert au minimum la version 3.4 de Python.
+
 ### Requests
 PagesJaunesScrap requiert Requests, une librairie HTTP élégante et simple pour Python, créée pour les êtres humains.
 
