@@ -21,6 +21,14 @@ pip install tqdm
 ```
 > https://github.com/tqdm/tqdm
 
+### colorama
+Si vous êtes sous Windows, colorama doit être installé pour que les barres de progression s'affichent bien.
+
+```
+pip install colorama
+```
+> https://github.com/tartley/colorama
+
 ## Des questions, des commentaires, etc?
 Vous pouvez me contacter, créer un ticket ou un pull request.
 
