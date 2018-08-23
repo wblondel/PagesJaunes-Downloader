@@ -29,6 +29,12 @@ pip install colorama
 ```
 > https://github.com/tartley/colorama
 
+
+#### requirements.txt
+
+Vous pouvez télécharger les paquets avec la commande :
+pip install -r requirements.txt
+
 ## Des questions, des commentaires, etc?
 Vous pouvez me contacter, créer un ticket ou un pull request.
 
