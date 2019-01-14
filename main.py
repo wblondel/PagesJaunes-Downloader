@@ -24,6 +24,15 @@ numAnnToScrap = None
 annType = None
 annYear = datetime.datetime.now().year
 
+print("!!! ATTENTION !!!")
+print("Les annuaires Pages Blanches des départements suivants ne sont plus disponibles, "
+      "ni au format papier ni au format numérique :")
+print("06, 13, 20, 30, 31, 33, 34, 38, 42, 44, 49, 57, 59, 60, 62, 64, 69, 74, 75, 76, 77, "
+      "78, 83, 84, 91, 92, 93, 94, 95, 974, 975, 976")
+print("Les éditions des années précédentes ne sont également plus disponibles.")
+print()
+
+
 while numAnnToScrap not in [item["numAnn"] for item in directories]:
     numAnnToScrap = input("Veuillez entrer le numéro du département dont vous voulez récupérer l'annuaire : ").zfill(3)
 
@@ -71,6 +80,9 @@ for loop in tqdm(range(2, 1500, 2), position=1):
               f"/{numAnnToScrap}/{annType:.1}{numAnnToScrap}{pageNumber}_0001.tif,/pj/{annYear}/{annType}" \
               f"/{numAnnToScrap}/{annType:.1}{numAnnToScrap}{pageNumberNext}_0001.tif&effects=&disposition=true" \
               f"&save=1&profile=doublepage&rect=0,0,1,1&height=2000&width=2306&type=image&"
+
+        print(url)
+        print()
 
         # We will save the file under this name
         saveas = Path(f"{annType}/{numAnnToScrap}/{annYear}_{annType}_001_{pageNumber}_{pageNumberNext}.jpg")
