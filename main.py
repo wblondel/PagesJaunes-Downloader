@@ -1,9 +1,9 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# PagesJaunesScrap Copyright (C) 2017    William Gerald Blondel
+# PagesJaunesScrap
+# William Gerald Blondel
 # contact@williamblondel.fr
-# Last modified 14th August 2017
 
 import json
 from pathlib import Path
