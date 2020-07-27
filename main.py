@@ -5,7 +5,7 @@
 # William Gerald Blondel
 # contact@williamblondel.fr
 
-
+import gettext
 import requests
 import sqlite3
 import re
@@ -20,24 +20,29 @@ PHONEBOOK_URL = {
 
 def main():
     """Solocal phone books downloader."""
+
+    localedir = "./locale"
+    translate = gettext.translation('PagesJaunesScraper', localedir, fallback=True)
+    _ = translate.gettext
+
     conn = sqlite3.connect('file:phonebooks.sqlite?mode=ro', uri=True)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     department = None
     while department is None:
-        departmentnumber = input("Veuillez entrer le numéro du département dont vous voulez récupérer l'annuaire : ")
+        departmentnumber = input(_("Veuillez entrer le numéro du département dont vous voulez récupérer l'annuaire : "))
         c.execute('SELECT * FROM departments WHERE number=?', (departmentnumber,))
         department = c.fetchone()
 
-    print(f"Vous avez choisi le département {department['name']} ({department['number']}).")
+    print(_(f"Vous avez choisi le département {department['name']} ({department['number']})."))
     print()
 
     directories = get_directories_for_department(c, department['number'])
     if not directories:
-        exit("Aucun annuaire numérisé n'est disponible pour ce département.")
+        exit(_("Aucun annuaire numérisé n'est disponible pour ce département."))
 
-    print("Les annuaires disponibles sont : ")
+    print(_("Les annuaires disponibles sont : "))
     for loop in range(len(directories)):
         directory = directories[loop]
         print(f"{loop + 1}> {directory['name']} ({directory['dirname']})")
@@ -45,40 +50,38 @@ def main():
 
     dir_index = None
     while dir_index not in range(1, len(directories)+1):
-        dir_index = int(input("Lequel voulez-vous récupérer ? "))
+        dir_index = int(input(_("Lequel voulez-vous récupérer ? ")))
 
     with requests.Session() as s:
         directory = directories[dir_index-1]
 
-        print("Récupération du nom des pages... ", end="")
+        print(_("Récupération du nom des pages... "), end="")
         pagenames = get_page_names(s, str(directory['number']), directory['diracr'])
         if not pagenames:
-            exit("The phone book you requested doesn't exist. Solocal removes more and more PDF phone books.")
-        print("OK")
+            exit(_("The phone book you requested doesn't exist. Solocal removes more and more PDF phone books."))
+        print(_("OK"))
 
-        print("Récupération de l'année de publication de l'annuaire... ", end="")
+        print(_("Récupération de l'année de publication de l'annuaire... "), end="")
         year = get_phonebook_year(s, str(directory['number']), directory['diracr'])
         if not year:
-            exit("Can't get the year of publication of this phone book (unexpected error, try again.)")
+            exit(_("Can't get the year of publication of this phone book (unexpected error, try again.)"))
         print(year)
 
-        print("Génération des URL des fichiers à télécharger... ", end="")
-        print(type(directory))
-        exit()
+        print(_("Génération des URL des fichiers à télécharger... "), end="")
         urls = generate_urls_to_download(pagenames, year, directory)
-        print("OK")
+        print(_("OK"))
 
-        print("Création des dossiers... ", end="")
+        print(_("Création des dossiers... "), end="")
         folder = f"{directory['diracr']}"
         if directory['number'] != department['number']:
             folder += f"/{str(department['number']).zfill(3)}"
         folder += f"/{str(directory['number']).zfill(3)}/{year}"
         Path(folder).mkdir(parents=True, exist_ok=True)
-        print("OK")
+        print(_("OK"))
 
-        print("Téléchargement des fichiers...")
+        print(_("Téléchargement des fichiers..."))
         download_files(s, urls, folder)
-        print("OK")
+        print(_("OK"))
 
 
 def download_files(session: requests.Session, urls: list, folder: str):
