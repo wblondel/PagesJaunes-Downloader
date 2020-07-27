@@ -5,105 +5,191 @@
 # William Gerald Blondel
 # contact@williamblondel.fr
 
-import json
-from pathlib import Path
-from tqdm import tqdm
+
 import requests
-import datetime
+import sqlite3
+import re
+from pathlib import Path
+
+BASE_URL = "https://mesannuaires.pagesjaunes.fr"
+PHONEBOOK_URL = {
+    "PJA": f"{BASE_URL}/pj.php",
+    "ANU": f"{BASE_URL}/pb.php"
+}
 
 
-DIRECTORIES_LIST_FILENAME = Path("liste_annuaires.json")
-CHUNK_SIZE = 1024*1024
+def main():
+    """Solocal phone books downloader."""
+    conn = sqlite3.connect('file:phonebooks.sqlite?mode=ro', uri=True)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
 
-# We load the list of directories
-with DIRECTORIES_LIST_FILENAME.open() as directories_list_fileobject:
-    directories = json.load(directories_list_fileobject)["annuaires"]
+    department = None
+    while department is None:
+        departmentnumber = input("Veuillez entrer le numéro du département dont vous voulez récupérer l'annuaire : ")
+        c.execute('SELECT * FROM departments WHERE number=?', (departmentnumber,))
+        department = c.fetchone()
 
-# We ask the user which directory he wants to scrap
-numAnnToScrap = None
-annType = None
-annYear = datetime.datetime.now().year
-
-print("!!! ATTENTION !!!")
-print("Les annuaires Pages Blanches des départements suivants ne sont plus disponibles, "
-      "ni au format papier ni au format numérique :")
-print("06, 13, 20, 30, 31, 33, 34, 38, 42, 44, 49, 57, 59, 60, 62, 64, 69, 74, 75, 76, 77, "
-      "78, 83, 84, 91, 92, 93, 94, 95, 974, 975, 976")
-print("Les éditions des années précédentes ne sont également plus disponibles.")
-print()
-
-
-while numAnnToScrap not in [item["numAnn"] for item in directories]:
-    numAnnToScrap = input("Veuillez entrer le numéro du département dont vous voulez récupérer l'annuaire : ").zfill(3)
-
-dptToScrap = [item for item in directories if item['numAnn'] == numAnnToScrap][0]
-print(f"Vous avez choisi le département {dptToScrap['nomDpt']} ({dptToScrap['numAnn']}).")
-print()
-
-while annType not in ["pja", "anu"]:
-    annType = input("Voulez-vous récupérer l'annuaire PagesJaunes (PJA) ou PagesBlanches (ANU) ? ").lower()
-
-print(f"Vous avez choisi l'annuaire {annType}.")
-print()
-
-if annType == "pja" and len(dptToScrap) > 2:
-    print("Ce département a plusieurs annuaires.")
-
-    for subAnn in dptToScrap["sousAnn"]:
-        print(f"> {subAnn['nomAnn']} ({subAnn['numAnn']})")
-
+    print(f"Vous avez choisi le département {department['name']} ({department['number']}).")
     print()
 
-    while numAnnToScrap not in [item["numAnn"] for item in dptToScrap["sousAnn"]]:
-        numAnnToScrap = input("Lequel voulez-vous récupérer ? ")
+    directories = get_directories_for_department(c, department['number'])
+    if not directories:
+        exit("Aucun annuaire numérisé n'est disponible pour ce département.")
 
+    print("Les annuaires disponibles sont : ")
+    for loop in range(len(directories)):
+        directory = directories[loop]
+        print(f"{loop + 1}> {directory['name']} ({directory['dirname']})")
     print()
-    print(f"Vous avez choisi l'annuaire {numAnnToScrap}.")
-    print()
+
+    dir_index = None
+    while dir_index not in range(1, len(directories)+1):
+        dir_index = int(input("Lequel voulez-vous récupérer ? "))
+
+    with requests.Session() as s:
+        directory = directories[dir_index-1]
+
+        print("Récupération du nom des pages... ", end="")
+        pagenames = get_page_names(s, str(directory['number']), directory['diracr'])
+        if not pagenames:
+            exit("The phone book you requested doesn't exist. Solocal removes more and more PDF phone books.")
+        print("OK")
+
+        print("Récupération de l'année de publication de l'annuaire... ", end="")
+        year = get_phonebook_year(s, str(directory['number']), directory['diracr'])
+        if not year:
+            exit("Can't get the year of publication of this phone book (unexpected error, try again.)")
+        print(year)
+
+        print("Génération des URL des fichiers à télécharger... ", end="")
+        print(type(directory))
+        exit()
+        urls = generate_urls_to_download(pagenames, year, directory)
+        print("OK")
+
+        print("Création des dossiers... ", end="")
+        folder = f"{directory['diracr']}"
+        if directory['number'] != department['number']:
+            folder += f"/{str(department['number']).zfill(3)}"
+        folder += f"/{str(directory['number']).zfill(3)}/{year}"
+        Path(folder).mkdir(parents=True, exist_ok=True)
+        print("OK")
+
+        print("Téléchargement des fichiers...")
+        download_files(s, urls, folder)
+        print("OK")
 
 
-# We create the folder where the files will be downloaded
-Path(f"{annType}/{numAnnToScrap}").mkdir(parents=True, exist_ok=True)
+def download_files(session: requests.Session, urls: list, folder: str):
+    """Downloads all the files of the phonebook.
 
-first_try = True
-
-# We start to scrap
-for loop in tqdm(range(2, 1500, 2), position=1):
-    pageNumber = str(loop).zfill(4)
-    pageNumberNext = str(loop+1).zfill(4)
-
-    status_code = None
-
-    while status_code != 200:
-        # We generate the URL of the file we want to download
-        url = f"http://mesannuaires.pagesjaunes.fr/fsi/server?fext=.jpg&source=/pj/{annYear}/{annType}" \
-              f"/{numAnnToScrap}/{annType:.1}{numAnnToScrap}{pageNumber}_0001.tif,/pj/{annYear}/{annType}" \
-              f"/{numAnnToScrap}/{annType:.1}{numAnnToScrap}{pageNumberNext}_0001.tif&effects=&disposition=true" \
-              f"&save=1&profile=doublepage&rect=0,0,1,1&height=2000&width=2306&type=image&"
-
-        print(url)
-        print()
-
-        # We will save the file under this name
-        saveas = Path(f"{annType}/{numAnnToScrap}/{annYear}_{annType}_001_{pageNumber}_{pageNumberNext}.jpg")
-
-        # Streaming, so we can iterate over the response.
-        r = requests.get(url, stream=True)
-        status_code = r.status_code
-
-        if status_code == 404:
-            if first_try:
-                annYear -= 1
-                first_try = False
-                continue
-            else:
-                quit()
-
+    :param session: Our Requests session.
+    :param urls: The list of URLs to download.
+    :param folder: The folder to which the files will be saved.
+    """
+    for url in urls:
+        saveas = Path(f"{folder}/{Path(url.rsplit('/', 1)[-1]).stem}.jpg")
+        print(saveas)
+        r = session.get(url, allow_redirects=True)
+        r.raise_for_status()
         with saveas.open(mode='wb') as f:
-            pbar = tqdm(unit="B", total=int(r.headers['Content-Length']), unit_scale=True, leave=False, position=2)
-            for chunk in r.iter_content(chunk_size=CHUNK_SIZE):
-                if chunk:  # filter out keep-alive new chunks
-                    pbar.update(len(chunk))
-                    f.write(chunk)
+            f.write(r.content)
 
-        first_try = False
+
+def generate_urls_to_download(pagenames: list, year: int, directory: sqlite3.Row) -> list:
+    """Generates the list of URLs to download.
+
+    :param pagenames: List of page names
+    :param year: The year of publication of the phonne book
+    :param directory: A directory row
+    :return: The list of URLs to download
+    :rtype: list
+    """
+
+    urls = []
+
+    for loop in range(len(pagenames)):
+        dir_acr = directory['diracr'].lower()
+        dir_number = str(directory['number']).zfill(3)
+        urls.append(f"{BASE_URL}/pages/{loop+1}-large.jpg?imgpath=pj/{year}/{dir_acr}/{dir_number}/{pagenames[loop]}")
+
+    return urls
+
+
+def get_phonebook_year(session: requests.Session, phonebook_id: str, phonebook_type: str) -> int:
+    """Gets the year of publication of a specific phone book.
+
+    :param session: Our Requests session.
+    :param phonebook_id: Phone book code (usually the department number).
+    :param phonebook_type: Phone book type. PJA for PagesBlanches and ANU for PagesJaunes.
+    :return: The year of publication of the phone book.
+    :rtype: int
+    """
+
+    year = 0
+
+    r = session.get(f"{PHONEBOOK_URL[phonebook_type]}?code={phonebook_id.zfill(3)}")
+    r.raise_for_status()
+
+    pattern = f"img/lib_ouv/(.*?)/{phonebook_type.lower()}/"
+    substring = re.search(pattern, r.text)
+    if substring:
+        year = int(substring.group(1))
+
+    return year
+
+
+def get_page_names(session: requests.Session, phonebook_id: str, phonebook_type: str) -> list:
+    """Gets the page names of a specific phone book.
+
+    :param session: Our Requests session.
+    :param phonebook_id: Phone book code (usually the department number).
+    :param phonebook_type: Phone book type. PJA for PagesBlanches and ANU for PagesJaunes.
+    :return: The list of page names. Empty list if the specific phone book doesn't exist.
+    :rtype: list
+    """
+
+    pagenames = []
+
+    r = session.get(f"{PHONEBOOK_URL[phonebook_type]}?code={phonebook_id.zfill(3)}")
+    r.raise_for_status()
+
+    pattern = "var pagenames = \'(.*?)\'"
+    substring = re.search(pattern, r.text)
+    if substring and substring.group(1):
+        pagenames = substring.group(1).split(',')
+
+    return pagenames
+
+
+def get_directories_for_department(c: sqlite3.Cursor, department: int) -> list:
+    """Gets the list of directories for a department.
+
+    :param c: Our SQLite3 cursor.
+    :param department: The department number.
+    :return: The list of directories. Empty list if there is no directory for this department.
+    :rtype: list
+    """
+
+    c.execute("""
+    SELECT t1.id, t1.name, t1.number, directories.name as dirname, directories.acronyme as diracr
+    FROM
+    (
+        SELECT id, name, number
+        FROM departments
+        WHERE number=?
+        UNION
+        SELECT id, name, number
+        FROM departments
+        WHERE parent_number=?
+    ) t1
+    JOIN departments_directories ON departments_directories.department_id = t1.id
+    JOIN directories ON departments_directories.directory_id = directories.id
+    """, (department, department))
+
+    return c.fetchall()
+
+
+if __name__ == "__main__":
+    main()
