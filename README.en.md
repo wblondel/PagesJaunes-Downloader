@@ -21,7 +21,7 @@ pipenv clean
 
 The advent of the Internet and smartphones greatly reduced the need for a paper phone book. 2019 is the last edition of Pages Blanches, 2020 is the last edition of Pages Jaunes. Some departments didn't get a recent edition, and only the latest edition is available online. Therefore, more and more digital phone books can't be downloaded anymore, for the benefit of the [PagesJaunes](https://www.pagesjaunes.fr/) website.
 
-When selecting a department, the tool shows which phone books are available by checking a database I created (phonebooks.sqlite). However, phone books may have been deleted since the latest update of this database. The download process will then result by an error.
+When selecting a department, the tool shows which phone books are available by checking a database I created (phonebooks.sqlite). However, a phone book you selected may have been deleted since the latest update of this database. The program will update the local database so that it doesn't list this phone book anymore.
 
 ## An issue? A comment? An idea?
 
