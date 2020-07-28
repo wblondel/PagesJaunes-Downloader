@@ -6,12 +6,13 @@
 # contact@williamblondel.fr
 
 import gettext
-import requests
-import sqlite3
-import re
-import sys
 import locale
+import re
+import sqlite3
+import sys
 from pathlib import Path
+
+import requests
 
 BASE_URL = "https://mesannuaires.pagesjaunes.fr"
 PHONEBOOK_URL = {
