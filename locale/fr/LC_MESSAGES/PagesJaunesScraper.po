@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PagesJaunesScraper\n"
-"POT-Creation-Date: 2020-07-29 00:32+0200\n"
-"PO-Revision-Date: 2020-07-29 00:32+0200\n"
+"POT-Creation-Date: 2020-07-29 01:13+0200\n"
+"PO-Revision-Date: 2020-07-29 01:14+0200\n"
 "Last-Translator: William Blondel <contact@williamblondel.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -19,8 +19,8 @@ msgid "Department number: "
 msgstr "Numéro du département: "
 
 #: main.py:43
-msgid "Chosen department: {department['name']} ({department['number']})."
-msgstr "Département choisi : {department['name']} ({department['number']})."
+msgid "Chosen department: {} ({})."
+msgstr "Département choisi : {} ({})."
 
 #: main.py:48
 msgid "No digital phone books are available for this department."
@@ -77,3 +77,6 @@ msgstr "Téléchargement des fichiers…"
 #: main.py:146
 msgid "This page is missing from PagesJaunes server =/"
 msgstr "Cette page est introuvable sur le serveur PagesJaunes =/"
+
+#~ msgid "Chosen department: {department['name']} ({department['number']})."
+#~ msgstr "Département choisi : {department['name']} ({department['number']})."

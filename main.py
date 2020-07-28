@@ -40,7 +40,7 @@ def main():
         c.execute('SELECT * FROM departments WHERE number=? AND parent_number IS NULL', (choice_department,))
         department = c.fetchone()
 
-    print(_(f"Chosen department: {department['name']} ({department['number']})."))
+    print(_("Chosen department: {} ({}).").format(department['name'], department['number']))
     print()
 
     directories = get_directories_for_department(c, department['number'])

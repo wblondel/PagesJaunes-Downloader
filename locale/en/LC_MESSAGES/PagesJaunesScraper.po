@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PagesJaunesScraper\n"
-"POT-Creation-Date: 2020-07-29 00:31+0200\n"
-"PO-Revision-Date: 2020-07-29 00:31+0200\n"
+"POT-Creation-Date: 2020-07-29 01:13+0200\n"
+"PO-Revision-Date: 2020-07-29 01:13+0200\n"
 "Last-Translator: William Blondel <contact@williamblondel.fr>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.4\n"
-"X-Poedit-Basepath: ../..\n"
+"X-Poedit-Basepath: ../../..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: main.py\n"
 
@@ -19,8 +19,8 @@ msgid "Department number: "
 msgstr "Department number: "
 
 #: main.py:43
-msgid "Chosen department: {department['name']} ({department['number']})."
-msgstr "Chosen department: {department['name']} ({department['number']})."
+msgid "Chosen department: {} ({})."
+msgstr "Chosen department: {} ({})."
 
 #: main.py:48
 msgid "No digital phone books are available for this department."
@@ -77,3 +77,6 @@ msgstr "Downloading files..."
 #: main.py:146
 msgid "This page is missing from PagesJaunes server =/"
 msgstr "This page is missing from PagesJaunes server =/"
+
+#~ msgid "Chosen department: {department['name']} ({department['number']})."
+#~ msgstr "Chosen department: {department['name']} ({department['number']})."
