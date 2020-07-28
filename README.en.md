@@ -8,6 +8,9 @@ The tool downloads the chosen phonebook in JPG format.
 
 ## Dependencies
 
+- Python 3.8
+- requests
+
 Move to the project directory and install the dependencies with [Pipenv](https://pipenv.pypa.io/en/stable/install/#pragmatic-installation-of-pipenv):
 ```
 pipenv sync

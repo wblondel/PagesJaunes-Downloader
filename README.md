@@ -11,7 +11,6 @@ L'outil télécharge les images au format JPG de l'annuaire choisi.
 
 - Python 3.8
 - requests
-- lxml
 
 En étant dans le répertoire du projet, installez les dépendances avec [Pipenv](https://pipenv.pypa.io/en/stable/install/#pragmatic-installation-of-pipenv):
 ```
