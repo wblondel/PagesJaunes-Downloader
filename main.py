@@ -9,6 +9,8 @@ import gettext
 import requests
 import sqlite3
 import re
+import sys
+import locale
 from pathlib import Path
 
 BASE_URL = "https://mesannuaires.pagesjaunes.fr"
@@ -21,83 +23,126 @@ PHONEBOOK_URL = {
 def main():
     """Solocal phone books downloader."""
 
-    localedir = "./locale"
-    translate = gettext.translation('PagesJaunesScraper', localedir, fallback=True)
-    _ = translate.gettext
+    # Initializing i18n
+    current_locale, encoding = locale.getdefaultlocale()
+    syslang = gettext.translation('PagesJaunesScraper', 'locale', languages=[current_locale], fallback="en")
+    syslang.install()
 
-    conn = sqlite3.connect('file:phonebooks.sqlite?mode=ro', uri=True)
+    # Connecting to database
+    conn = sqlite3.connect('file:phonebooks.sqlite', uri=True)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     department = None
     while department is None:
-        departmentnumber = input(_("Veuillez entrer le numéro du département dont vous voulez récupérer l'annuaire : "))
-        c.execute('SELECT * FROM departments WHERE number=?', (departmentnumber,))
+        choice_department = input(_("Department number: "))
+        c.execute('SELECT * FROM departments WHERE number=? AND parent_number IS NULL', (choice_department,))
         department = c.fetchone()
 
-    print(_(f"Vous avez choisi le département {department['name']} ({department['number']})."))
+    print(_(f"Chosen department: {department['name']} ({department['number']})."))
     print()
 
     directories = get_directories_for_department(c, department['number'])
     if not directories:
-        exit(_("Aucun annuaire numérisé n'est disponible pour ce département."))
+        _exit(c, _("No digital phone books are available for this department."))
 
-    print(_("Les annuaires disponibles sont : "))
+    print(_("These phone books are available for this department: "))
     for loop in range(len(directories)):
         directory = directories[loop]
-        print(f"{loop + 1}> {directory['name']} ({directory['dirname']})")
+        print(f"{loop + 1}> {directory['dpt_name']} ({directory['dir_name']})")
     print()
 
-    dir_index = None
-    while dir_index not in range(1, len(directories)+1):
-        dir_index = int(input(_("Lequel voulez-vous récupérer ? ")))
+    choice_directory = None
+    while choice_directory not in range(1, len(directories)+1):
+        choice_directory = int(input(_("Which one would you like to download? ")))
 
     with requests.Session() as s:
-        directory = directories[dir_index-1]
+        directory = directories[choice_directory-1]
 
-        print(_("Récupération du nom des pages... "), end="")
-        pagenames = get_page_names(s, str(directory['number']), directory['diracr'])
+        print(_("Fetching page names... "), end="")
+        pagenames = get_page_names(s, directory['dpt_number'], directory['dir_acr'])
+
         if not pagenames:
-            exit(_("The phone book you requested doesn't exist. Solocal removes more and more PDF phone books."))
+            print(_("The phone book you requested doesn't exist. Solocal removes more and more PDF phone books."))
+            print(_("Deleting the phone book from the local database... "), end="")
+            delete_phonebook_from_db(c, directory['dpt_id'], directory['dir_id'])
+            conn.commit()
+            print(_("OK"))
+            _exit(c, _("The phone book you requested doesn't exist. Solocal removes more and more PDF phone books."))
+
         print(_("OK"))
 
-        print(_("Récupération de l'année de publication de l'annuaire... "), end="")
-        year = get_phonebook_year(s, str(directory['number']), directory['diracr'])
+        print(_("Fetching the year of publication of the chosen phone book... "), end="")
+        year = get_phonebook_year(s, directory['dpt_number'], directory['dir_acr'])
         if not year:
-            exit(_("Can't get the year of publication of this phone book (unexpected error, try again.)"))
+            _exit(c, _("Unable to fetch it. Unexpected error, try again."))
         print(year)
 
-        print(_("Génération des URL des fichiers à télécharger... "), end="")
+        print(_("Generating the links of the files to download... "), end="")
         urls = generate_urls_to_download(pagenames, year, directory)
         print(_("OK"))
 
-        print(_("Création des dossiers... "), end="")
-        folder = f"{directory['diracr']}"
-        if directory['number'] != department['number']:
+        print(_("Creating folders... "), end="")
+        folder = f"{directory['dir_acr']}"
+        if directory['dpt_number'] != department['number']:
             folder += f"/{str(department['number']).zfill(3)}"
-        folder += f"/{str(directory['number']).zfill(3)}/{year}"
+        folder += f"/{str(directory['dpt_number']).zfill(3)}/{year}"
         Path(folder).mkdir(parents=True, exist_ok=True)
         print(_("OK"))
 
-        print(_("Téléchargement des fichiers..."))
+        print(_("Downloading files..."))
         download_files(s, urls, folder)
         print(_("OK"))
+
+        _exit(c)
+
+
+def _exit(c: sqlite3.Cursor, msg: str = None):
+    """Close the database connection and exit the program.
+
+    :param c: An SQLite3 cursor.
+    :param msg: Exit status.
+    """
+    c.close()
+    sys.exit(msg)
+
+
+def delete_phonebook_from_db(c: sqlite3.Cursor, department_id: int, directory_id: int) -> int:
+    """Delete a phone book from the local SQLite database.
+
+    :param c: An SQLite3 cursor.
+    :param department_id: The row ID of the department in the database.
+    :param directory_id: The row ID of the directory in the database.
+    :return: The number of rows deleted (should be equal to 1).
+    :rtype: int
+    """
+
+    c.execute("""DELETE FROM departments_directories
+    WHERE department_id=? AND directory_id=?
+    """, (department_id, directory_id))
+
+    return c.rowcount
 
 
 def download_files(session: requests.Session, urls: list, folder: str):
     """Downloads all the files of the phonebook.
+    Doesn't download a file if it already exists.
 
-    :param session: Our Requests session.
+    :param session: A Requests session.
     :param urls: The list of URLs to download.
     :param folder: The folder to which the files will be saved.
     """
     for url in urls:
         saveas = Path(f"{folder}/{Path(url.rsplit('/', 1)[-1]).stem}.jpg")
         print(saveas)
-        r = session.get(url, allow_redirects=True)
-        r.raise_for_status()
-        with saveas.open(mode='wb') as f:
-            f.write(r.content)
+
+        if not saveas.exists():
+            r = session.get(url, allow_redirects=True)
+            if r.status_code == 200:
+                with saveas.open(mode='wb') as f:
+                    f.write(r.content)
+            else:
+                print(_("This page is missing from PagesJaunes server =/"))
 
 
 def generate_urls_to_download(pagenames: list, year: int, directory: sqlite3.Row) -> list:
@@ -113,17 +158,17 @@ def generate_urls_to_download(pagenames: list, year: int, directory: sqlite3.Row
     urls = []
 
     for loop in range(len(pagenames)):
-        dir_acr = directory['diracr'].lower()
-        dir_number = str(directory['number']).zfill(3)
-        urls.append(f"{BASE_URL}/pages/{loop+1}-large.jpg?imgpath=pj/{year}/{dir_acr}/{dir_number}/{pagenames[loop]}")
+        dir_acr = directory['dir_acr'].lower()
+        dpt_number = str(directory['dpt_number']).zfill(3)
+        urls.append(f"{BASE_URL}/pages/{loop+1}-large.jpg?imgpath=pj/{year}/{dir_acr}/{dpt_number}/{pagenames[loop]}")
 
     return urls
 
 
-def get_phonebook_year(session: requests.Session, phonebook_id: str, phonebook_type: str) -> int:
+def get_phonebook_year(session: requests.Session, phonebook_id: int, phonebook_type: str) -> int:
     """Gets the year of publication of a specific phone book.
 
-    :param session: Our Requests session.
+    :param session: A Requests session.
     :param phonebook_id: Phone book code (usually the department number).
     :param phonebook_type: Phone book type. PJA for PagesBlanches and ANU for PagesJaunes.
     :return: The year of publication of the phone book.
@@ -132,7 +177,7 @@ def get_phonebook_year(session: requests.Session, phonebook_id: str, phonebook_t
 
     year = 0
 
-    r = session.get(f"{PHONEBOOK_URL[phonebook_type]}?code={phonebook_id.zfill(3)}")
+    r = session.get(f"{PHONEBOOK_URL[phonebook_type]}?code={str(phonebook_id).zfill(3)}")
     r.raise_for_status()
 
     pattern = f"img/lib_ouv/(.*?)/{phonebook_type.lower()}/"
@@ -143,10 +188,10 @@ def get_phonebook_year(session: requests.Session, phonebook_id: str, phonebook_t
     return year
 
 
-def get_page_names(session: requests.Session, phonebook_id: str, phonebook_type: str) -> list:
+def get_page_names(session: requests.Session, phonebook_id: int, phonebook_type: str) -> list:
     """Gets the page names of a specific phone book.
 
-    :param session: Our Requests session.
+    :param session: A Requests session.
     :param phonebook_id: Phone book code (usually the department number).
     :param phonebook_type: Phone book type. PJA for PagesBlanches and ANU for PagesJaunes.
     :return: The list of page names. Empty list if the specific phone book doesn't exist.
@@ -155,7 +200,7 @@ def get_page_names(session: requests.Session, phonebook_id: str, phonebook_type:
 
     pagenames = []
 
-    r = session.get(f"{PHONEBOOK_URL[phonebook_type]}?code={phonebook_id.zfill(3)}")
+    r = session.get(f"{PHONEBOOK_URL[phonebook_type]}?code={str(phonebook_id).zfill(3)}")
     r.raise_for_status()
 
     pattern = "var pagenames = \'(.*?)\'"
@@ -169,14 +214,15 @@ def get_page_names(session: requests.Session, phonebook_id: str, phonebook_type:
 def get_directories_for_department(c: sqlite3.Cursor, department: int) -> list:
     """Gets the list of directories for a department.
 
-    :param c: Our SQLite3 cursor.
+    :param c: An SQLite3 cursor.
     :param department: The department number.
     :return: The list of directories. Empty list if there is no directory for this department.
     :rtype: list
     """
 
     c.execute("""
-    SELECT t1.id, t1.name, t1.number, directories.name as dirname, directories.acronyme as diracr
+    SELECT dpt.id as dpt_id, dpt.name as dpt_name, dpt.number as dpt_number,
+    dir.id as dir_id, dir.name as dir_name, dir.acronyme as dir_acr
     FROM
     (
         SELECT id, name, number
@@ -186,9 +232,9 @@ def get_directories_for_department(c: sqlite3.Cursor, department: int) -> list:
         SELECT id, name, number
         FROM departments
         WHERE parent_number=?
-    ) t1
-    JOIN departments_directories ON departments_directories.department_id = t1.id
-    JOIN directories ON departments_directories.directory_id = directories.id
+    ) dpt
+    JOIN departments_directories dd ON dd.department_id = dpt.id
+    JOIN directories dir ON dd.directory_id = dir.id
     """, (department, department))
 
     return c.fetchall()
