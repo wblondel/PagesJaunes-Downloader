@@ -1,8 +1,8 @@
-# PagesJaunesScrap
+# PagesJaunes-Downloader
 
 Translation: [ENGLISH](README.en.md)
 
-PagesJaunesScrap est un outil pour récupérer les annuaires Pages Jaunes
+PagesJaunes-Downloader est un outil pour récupérer les annuaires Pages Jaunes
 et Pages Blanches en format numérique.
 
 L'outil télécharge les images au format JPG de l'annuaire choisi.
