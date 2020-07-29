@@ -1,7 +1,7 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# PagesJaunesScrap
+# PagesJaunes-Downloader
 # William Gerald Blondel
 # contact@williamblondel.fr
 

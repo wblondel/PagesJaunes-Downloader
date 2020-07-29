@@ -1,8 +1,8 @@
-# PagesJaunesScrap
+# PagesJaunes-Downloader
 
 Translation: [FRENCH](README.md)
 
-PagesJaunesScrap is a tool to download the digital editions of the French phone books: PagesJaunes and PagesBlanches.
+PagesJaunes-Downloader is a tool to download the digital editions of the French phone books: PagesJaunes and PagesBlanches.
 
 The tool downloads the chosen phonebook in JPG format.
 
