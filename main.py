@@ -60,6 +60,8 @@ def main():
     with requests.Session() as s:
         directory = directories[choice_directory-1]
 
+        s.headers.update({'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4501.0 Safari/537.36 Edg/92.0.891.1'})
+
         print(_("Fetching page names... "), end="")
         pagenames = get_page_names(s, directory['dpt_number'], directory['dir_acr'])
 
